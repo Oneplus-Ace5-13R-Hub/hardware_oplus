@@ -35,14 +35,15 @@ static bool readFpState(int fd, int& screenX, int& screenY) {
         return false;
     }
 
-    rc = read(fd, &buffer, sizeof(buffer));
-    if (rc < 0) {
+    rc = read(fd, buffer, sizeof(buffer) - 1);
+    if (rc <= 0) {
         ALOGE("failed to read state: %d", rc);
         return false;
     }
+    buffer[rc] = '\0';
 
     rc = sscanf(buffer, "%d,%d,%d", &screenX, &screenY, &state);
-    if (rc < 0) {
+    if (rc != 3) {
         ALOGE("failed to parse fp state: %d", rc);
         return false;
     }
@@ -72,6 +73,7 @@ Sensor::Sensor(int32_t sensorHandle, ISensorsEventCallback* callback)
     : mIsEnabled(false),
       mSamplingPeriodNs(0),
       mLastSampleTimeNs(0),
+      mStopThread(false),
       mCallback(callback),
       mMode(OperationMode::NORMAL) {
     mSensorInfo.sensorHandle = sensorHandle;
@@ -305,11 +307,11 @@ void UdfpsSensor::run() {
                 continue;
             }
 
-            if (mPolls[1].revents == mPolls[1].events && readFpState(mPollFd, mScreenX, mScreenY) &&
-                reportEvent) {
+            if ((mPolls[1].revents & mPolls[1].events) &&
+                readFpState(mPollFd, mScreenX, mScreenY) && reportEvent) {
                 mIsEnabled = false;
                 mCallback->postEvents(readEvents(), isWakeUpSensor());
-            } else if (mPolls[0].revents == mPolls[0].events) {
+            } else if (mPolls[0].revents & mPolls[0].events) {
                 char buf;
                 read(mWaitPipeFd[0], &buf, sizeof(buf));
             }

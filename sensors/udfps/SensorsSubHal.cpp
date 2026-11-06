@@ -113,6 +113,10 @@ Return<void> SensorsSubHal::debug(const hidl_handle& fd, const hidl_vec<hidl_str
     }
 
     FILE* out = fdopen(dup(fd->data[0]), "w");
+    if (out == nullptr) {
+        ALOGE("%s: failed to open fd for writing", __FUNCTION__);
+        return Void();
+    }
 
     if (args.size() != 0) {
         fprintf(out,
