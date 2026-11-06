@@ -128,7 +128,7 @@ public class LinearmotorVibrator {
         if (mVibrator == null) {
             return;
         }
-        mVibrator.vibrate(toVibrationEffect(null));
+        mVibrator.vibrate(effect != null ? effect : toVibrationEffect(null));
     }
 
     public void vibrate(VibrationEffect effect, String reason,
@@ -136,7 +136,7 @@ public class LinearmotorVibrator {
         if (mVibrator == null) {
             return;
         }
-        mVibrator.vibrate(toVibrationEffect(null));
+        mVibrator.vibrate(effect != null ? effect : toVibrationEffect(null));
     }
 
     public void vibrate(int uid, String opPkg, VibrationEffect effect, String reason,
@@ -144,7 +144,7 @@ public class LinearmotorVibrator {
         if (mVibrator == null) {
             return;
         }
-        mVibrator.vibrate(toVibrationEffect(null));
+        mVibrator.vibrate(effect != null ? effect : toVibrationEffect(null));
     }
 
     /*

@@ -33,7 +33,7 @@ ConsumerIr::ConsumerIr() : supportedFreqs({{MIN_FREQ, MAX_FREQ}}) {}
         return ::ndk::ScopedAStatus::fromExceptionCode(EX_UNSUPPORTED_OPERATION);
     }
 
-    int32_t totalTime = 0;
+    int64_t totalTime = 0;
     for (int32_t value : pattern) {
         if (value < 0) {
             LOG(ERROR) << "Invalid pattern value: " << value;
